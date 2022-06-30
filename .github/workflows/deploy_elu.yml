@@ -43,7 +43,7 @@ jobs:
           port: ${{ secrets.DEPLOY_PORT }}
           key: ${{ secrets.DEPLOY_KEY }}
           source: "./"
-          target: ${{ github.event.repository.full_name }}
+          target: ${{ github.event.repository.name }}
       - name: Notify build success
         if: ${{ success() }}
         uses: fjogeleit/http-request-action@master
