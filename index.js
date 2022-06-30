@@ -74,7 +74,14 @@ app.use(partials());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(methodOverride());
-app.use(session({ secret: 'keyboard cat', resave: false, saveUninitialized: false }));
+app.use(session({ 
+    secret: process.env.SESSION_SECRET, 
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+        secure: (process.env.NODE_ENV || '') !== 'dev'
+    }
+}));
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(express.static(__dirname + '/public'));
@@ -96,6 +103,7 @@ app.post('/account', ensureAuthenticated, async (req, res) => {
         upsert: true,
         new: true,
     });
+    res.redirect('/account');
 });
   
 app.get('/login', function(req, res){
