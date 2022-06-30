@@ -79,9 +79,12 @@ app.use(session({
     resave: false,
     saveUninitialized: false,
     cookie: {
-        secure: (process.env.NODE_ENV || '') !== 'dev'
+        secure: (process.env.NODE_ENV || '') === 'prod'
     }
 }));
+if (process.env.NODE_ENV === 'prod') {
+    app.set('trust proxy', 1);
+}
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(express.static(__dirname + '/public'));
