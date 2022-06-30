@@ -6,7 +6,7 @@ mongoose.connection.on('error', err => {
     logger.error(err);
 });
 
-module.exports = mongoose.connect(connectionString, {useNewUrlParser: true, useUnifiedTopology: true})
+module.exports = mongoose.connect(connectionString, {useNewUrlParser: true, useUnifiedTopology: true, dbName: process.env.MONGODB_DB_NAME || 'test'})
     .then(res => {
         
     })
