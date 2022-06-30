@@ -1,0 +1,15 @@
+<form action="/account/" method="post">
+    <label for="_id">Id: </label>
+    <input id="_id" type="text" name="_id" value="<%=user._id%>" disabled>
+    <label for="Username">Username: </label>
+    <input id="Username" type="text" name="Username" value="<%=user.Username%>" disabled>
+    <label for="DisplayName">DisplayName: </label>
+    <input id="DisplayName" type="text" name="DisplayName" value="<%=user.DisplayName%>" disabled>
+    <label for="StudentId">StudentId: </label>
+    <input id="StudentId" type="text" name="StudentId" value="<%=user.StudentId%>">
+    <label for="CodeForces">CodeForces: </label>
+    <input id="CodeForces" type="text" name="CodeForces" value="<%=user.CodeForces%>">
+    <label for="CodeChef">CodeChef: </label>
+    <input id="CodeChef" type="text" name="CodeChef" value="<%=user.CodeChef%>">
+    <input type="submit" value="OK">
+</form>
