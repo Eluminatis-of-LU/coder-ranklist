@@ -1,4 +1,5 @@
 const express = require('express');
+const csurf = require('csurf');
 const config = require('./config');
 const util = require('util');
 const logger = require('./logger');
@@ -68,6 +69,8 @@ passport.use(new GitHubStrategy({
 
 const app = express();
 
+const csrf = csurf();
+
 app.set('views', __dirname + '/views');
 app.set('view engine', 'ejs');
 app.use(partials());
@@ -82,6 +85,7 @@ app.use(session({
         secure: (process.env.NODE_ENV || '') === 'prod'
     }
 }));
+app.use(csrf);
 if (process.env.NODE_ENV === 'prod') {
     app.set('trust proxy', 1);
 }
@@ -94,7 +98,7 @@ app.get('/', (req, res) => {
 });
   
 app.get('/account', ensureAuthenticated, (req, res) => {
-    res.render('account', { pageTitle: 'Account', user: req.user });
+    res.render('account', { pageTitle: 'Account', user: req.user, csrfToken: req.csrfToken() });
 });
 
 app.post('/account', ensureAuthenticated, async (req, res) => {
