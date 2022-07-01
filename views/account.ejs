@@ -1,3 +1,6 @@
+<% for (let i = 0; i < errors.length; i++) { %>
+    <p class="button error"> <%= errors[i].param %>: <%= errors[i].msg %> "<%= errors[i].value %>" </p>
+<% } %>
 <form action="/account/" method="post">
     <input type="hidden" name="_csrf" csurf=<%=csrfToken%> value="<%=csrfToken%>" />
     <label for="_id">Id: </label>

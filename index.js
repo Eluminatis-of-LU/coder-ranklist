@@ -1,5 +1,6 @@
 const express = require('express');
 const csurf = require('csurf');
+const expressValidator = require('express-validator');
 const config = require('./config');
 const util = require('util');
 const logger = require('./logger');
@@ -87,6 +88,13 @@ app.use(session({
     }
 }));
 if (process.env.NODE_ENV === 'prod') {
+    const limiter = require('express-rate-limit')({
+        windowMs: (process.env.RATE_LIMIT_WINDOW_MINUTE || 15) * 60 * 1000,
+        max: (process.env.RATE_LIMIT || 100),
+        standardHeaders: true,
+        legacyHeaders: false,
+    });
+    app.use(limiter);
     app.set('trust proxy', 1);
 }
 app.use(passport.initialize());
@@ -100,19 +108,35 @@ app.get('/', (req, res) => {
 });
   
 app.get('/account', ensureAuthenticated, (req, res) => {
-    res.render('account', { pageTitle: 'Account', user: req.user, csrfToken: req.csrfToken() });
+    res.render('account', { 
+        pageTitle: 'Account',
+        user: req.user,
+        csrfToken: req.csrfToken(),
+        errors: req.session.errors || []
+    });
 });
 
-app.post('/account', ensureAuthenticated, async (req, res) => {
-    let userResponse = await userCollection.findById(req.user._id);
-    await userCollection.findOneAndUpdate({_id: req.user._id}, {
-        ...userResponse._doc,
-        ...req.body,
-    }, {
-        upsert: true,
-        new: true,
-    });
-    // res.redirect('/account');
+app.post('/account',
+    ensureAuthenticated,
+    expressValidator.body('StudentId').isNumeric().trim().escape(),
+    expressValidator.body('CodeForces').isAlphanumeric().trim().escape(),
+    expressValidator.body('CodeChef').isAlphanumeric().trim().escape(),
+    async (req, res) => {
+        const errors = expressValidator.validationResult(req);
+        if (!errors.isEmpty()) {
+            req.session.errors = errors.array();
+            res.redirect('/account');
+            return;
+        }
+        let userResponse = await userCollection.findById(req.user._id);
+        await userCollection.findOneAndUpdate({_id: req.user._id}, {
+            ...userResponse._doc,
+            ...req.body,
+        }, {
+            upsert: true,
+            new: true,
+        });
+        res.redirect('/account');
 });
   
 app.get('/login', function(req, res){
