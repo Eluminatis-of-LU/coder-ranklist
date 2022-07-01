@@ -1,5 +1,5 @@
 <form action="/account/" method="post">
-    <input type="hidden" name="_csrf" csurf=<%= csrfToken %> />
+    <input type="hidden" name="_csrf" csurf=<%=csrfToken%> value="<%=csrfToken%>" />
     <label for="_id">Id: </label>
     <input id="_id" type="text" name="_id" value="<%=user._id%>" disabled>
     <label for="Username">Username: </label>

@@ -77,6 +77,7 @@ app.use(partials());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(methodOverride());
+
 app.use(session({ 
     secret: process.env.SESSION_SECRET, 
     resave: false,
@@ -85,12 +86,13 @@ app.use(session({
         secure: (process.env.NODE_ENV || '') === 'prod'
     }
 }));
-app.use(csrf);
 if (process.env.NODE_ENV === 'prod') {
     app.set('trust proxy', 1);
 }
 app.use(passport.initialize());
 app.use(passport.session());
+app.use(csrf);
+
 app.use(express.static(__dirname + '/public'));
 
 app.get('/', (req, res) => {
@@ -110,7 +112,7 @@ app.post('/account', ensureAuthenticated, async (req, res) => {
         upsert: true,
         new: true,
     });
-    res.redirect('/account');
+    // res.redirect('/account');
 });
   
 app.get('/login', function(req, res){
