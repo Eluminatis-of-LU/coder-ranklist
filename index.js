@@ -108,11 +108,13 @@ app.get('/', (req, res) => {
 });
   
 app.get('/account', ensureAuthenticated, (req, res) => {
+    const errors = req.session.errors || [];
+    req.session.errors = [];
     res.render('account', { 
         pageTitle: 'Account',
         user: req.user,
         csrfToken: req.csrfToken(),
-        errors: req.session.errors || []
+        errors: errors,
     });
 });
 
